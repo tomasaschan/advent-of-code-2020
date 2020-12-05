@@ -42,6 +42,18 @@ def part_1_examples():
 def part_1():
     assert 915 == max(seat_id(spec.strip()) for spec in data)
 
+    assert 915 == max(
+        int(
+            spec.strip()
+            .replace("F", "0")
+            .replace("B", "1")
+            .replace("L", "0")
+            .replace("R", "1"),
+            2,
+        )
+        for spec in data
+    )
+
 
 def part_2():
     ids = sorted([seat_id(spec.strip()) for spec in data])
