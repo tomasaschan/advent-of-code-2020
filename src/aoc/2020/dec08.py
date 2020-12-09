@@ -1,4 +1,4 @@
-with open("input/dec8.txt") as f:
+with open("input/2020/dec08.txt") as f:
     input = f.read()
 
 

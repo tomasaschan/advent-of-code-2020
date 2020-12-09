@@ -3,7 +3,7 @@ import queue
 
 from collections import defaultdict
 
-with open("input/dec7.txt") as f:
+with open("input/2020/dec07.txt") as f:
     input = f.read()
 
 CONTAINER_RX = re.compile(r"^(.+?) bags?")

@@ -2,7 +2,7 @@ import itertools
 
 
 def read_input():
-    with open("./input/dec1.txt", "r") as f:
+    with open("./input/2020/dec01.txt", "r") as f:
         for line in f.readlines():
             yield line
 

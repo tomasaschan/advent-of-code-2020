@@ -1,6 +1,6 @@
 import itertools
 
-with open("input/dec9.txt") as f:
+with open("input/2020/dec09.txt") as f:
     data = list(map(int, f.readlines()))
 
 example_data = [

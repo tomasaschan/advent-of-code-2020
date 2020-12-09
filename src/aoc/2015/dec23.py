@@ -1,5 +1,5 @@
 def read_program():
-    with open("input/2015/dec-23.txt") as input:
+    with open("input/2015/dec23.txt") as input:
         program = []
         for line in input.readlines():
             program.append(tuple(map(lambda s: s.strip(","), line.strip().split(" "))))

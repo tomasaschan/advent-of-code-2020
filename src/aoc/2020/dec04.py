@@ -1,6 +1,6 @@
 import re
 
-with open("input/dec4.txt") as f:
+with open("input/2020/dec04.txt") as f:
     data = [s.strip() for s in f.readlines()]
 
 rx = re.compile(r"(\w+):([^\s]+)")

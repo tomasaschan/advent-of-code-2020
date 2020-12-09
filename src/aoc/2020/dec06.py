@@ -1,6 +1,6 @@
 import string
 
-with open("input/dec6.txt") as f:
+with open("input/2020/dec06.txt") as f:
     input = f.read()
 
 

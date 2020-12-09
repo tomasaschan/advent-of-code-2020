@@ -3,7 +3,7 @@ from collections import defaultdict
 
 
 def read_input():
-    with open("./input/dec2.txt", "r") as f:
+    with open("./input/2020/dec02.txt", "r") as f:
         for line in f.readlines():
             yield line
 

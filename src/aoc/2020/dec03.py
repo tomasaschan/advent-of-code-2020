@@ -4,7 +4,7 @@ def read_map():
 
     map = dict()
 
-    with open("input/dec3.txt", "r") as f:
+    with open("input/2020/dec03.txt", "r") as f:
         for y, line in enumerate(f.readlines()):
             y = int(y)
             height = max(height, y)
