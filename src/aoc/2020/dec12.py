@@ -60,13 +60,17 @@ def move_waypoint(position, waypoint, instruction):
     raise Exception(f"Unknown instruction: {instruction}")
 
 
+def manhattan(pos):
+    return abs(pos[0]) + abs(pos[1])
+
+
 def part_1():
     state = (0, 0, "E")
 
     for instruction in input:
         state = move(state, instruction)
 
-    assert 445 == abs(state[0]) + abs(state[1])
+    assert 445 == manhattan(state[0:2])
 
 
 def part_2():
@@ -75,18 +79,4 @@ def part_2():
     for instruction in input:
         pos, wp = move_waypoint(pos, wp, instruction)
 
-    assert 0 == abs(pos[0]) + abs(pos[1])
-
-
-def part_2_example():
-    pos, wp = (0, 0), (10, 1)
-    for instruction in """F10
-N3
-F7
-L270
-F11""".splitlines():
-        print(pos, wp)
-        print(instruction)
-        pos, wp = move_waypoint(pos, wp, instruction)
-    print(pos, wp)
-    assert 286 == abs(pos[0]) + abs(pos[1])
+    assert 42495 == manhattan(pos)
