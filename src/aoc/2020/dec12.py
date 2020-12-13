@@ -37,9 +37,9 @@ def move_waypoint(position, waypoint, instruction):
     if instruction[0] == "S":
         return position, (waypoint[0], waypoint[1] - int(instruction[1:]))
     if instruction[0] == "E":
-        return position, (waypoint[0] - int(instruction[1:]), waypoint[1])
-    if instruction[0] == "W":
         return position, (waypoint[0] + int(instruction[1:]), waypoint[1])
+    if instruction[0] == "W":
+        return position, (waypoint[0] - int(instruction[1:]), waypoint[1])
     if instruction[0] == "L":
         wpx, wpy = waypoint
         for _ in range(int(instruction[1:]) // 90):
