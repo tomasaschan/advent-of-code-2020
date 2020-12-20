@@ -65,9 +65,63 @@ def parse_1(tokens):
             return ("LITERAL", tokens[current - 1][1])
 
         if match("OPEN"):
-            expr = binary()
+            expr = expression()
             assert match("CLOSE")
             return expr
+
+    return expression()
+
+
+def parse_2(tokens):
+    # grammar:
+    # expression     -> multiplication
+    # multiplication -> factor ("*" factor)*
+    # factor         -> term ("+" term)*
+    # term           -> NUMBER | "(" expression ")"
+    current = 0
+
+    def match(*ts):
+        nonlocal current
+        if current >= len(tokens):
+            return False
+        for t in ts:
+            if tokens[current][0] == t:
+                current += 1
+                return True
+
+        return False
+
+    def expression():
+        return addition()
+
+    def addition():
+        expr = factor()
+
+        while match("MUL"):
+            rhs = factor()
+            expr = ("MUL", expr, rhs)
+
+        return expr
+
+    def factor():
+        expr = term()
+
+        while match("ADD"):
+            rhs = term()
+            expr = ("ADD", expr, rhs)
+
+        return expr
+
+    def term():
+        if match("LITERAL"):
+            return ("LITERAL", tokens[current - 1][1])
+
+        if match("OPEN"):
+            expr = expression()
+            assert match("CLOSE")
+            return expr
+
+        raise Exception("unexpected: " + tokens[current])
 
     return expression()
 
@@ -85,5 +139,13 @@ def compute_1(input):
     return evaluate(parse_1(list(tokenize(input))))
 
 
+def compute_2(input):
+    return evaluate(parse_2(list(tokenize(input))))
+
+
 def part_1():
     assert 1408133923393 == sum(compute_1(line) for line in input)
+
+
+def part_2():
+    assert 314455761823725 == sum(compute_2(line) for line in input)
