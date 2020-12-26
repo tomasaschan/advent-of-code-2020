@@ -1,128 +1,66 @@
-import datetime
-
-from typing import Optional
+import itertools
 
 
-class Node:
-    def __init__(self, value):
-        self.value = value
-        self.next: Optional["Node"] = None
-
-    def __str__(self) -> str:
-        s = str(self.value)
-        n = self.next
-        while n.value != self.value:
-            s += f" -> {n.value}"
-            n = n.next
-
-        return s
+def init(seed, n):
+    s = {
+        seed[i - 1] if i <= len(seed) else i: seed[i] if i < len(seed) else i + 1
+        for i in range(1, n)
+    }
+    s[n if n > len(seed) else seed[-1]] = seed[0]
+    return seed[0], s
 
 
-def parse(input):
-    parsed = [int(c) for c in input]
+def cups_from(cups, start, n, skip=0):
+    def iter_cups(cups, start):
+        current = start
+        for _ in range(skip):
+            current = cups[current]
 
-    head = Node(parsed[0])
-    cur = head
-    nodes = {parsed[0]: head}
-    for i in parsed[1:]:
-        n = Node(i)
-        nodes[i] = n
-        cur.next = n
-        cur = n
+        while True:
+            yield current
+            current = cups[current]
 
-    cur.next = head
-
-    return head, min(parsed), max(parsed), nodes
+    return list(itertools.islice(iter_cups(cups, start), n))
 
 
-def extract_three(current):
-    first_picked = current.next
-    last_picked = first_picked.next.next
+def play_move(current, cups):
+    picked = cups_from(cups, current, 3, skip=1)
+    destination = current - 1 if current - 1 > 0 else max(cups.keys())
+    while destination in picked:
+        destination = destination - 1 if destination - 1 > 0 else max(cups.keys())
 
-    current.next = last_picked.next
-    return first_picked
+    for (s, d) in (
+        (current, cups[picked[-1]]),
+        (destination, picked[0]),
+        (picked[-1], cups[destination]),
+    ):
+        cups[s] = d
 
-
-def find_destination(current, lo, hi, picked, nodes):
-    target = current.value - 1 if current.value > lo else hi
-    while target in picked:
-        target = target - 1 if target > lo else hi
-
-    return nodes[target]
-
-
-def insert_three_after(destination, three):
-    three.next.next.next = destination.next
-    destination.next = three
+    return cups[current]
 
 
-def play_round(current, lo, hi, nodes):
-    picked = extract_three(current)
-    destination = find_destination(
-        current,
-        lo,
-        hi,
-        set((picked.value, picked.next.value, picked.next.next.value)),
-        nodes,
-    )
-    if destination.value == 1:
-        print(
-            f"putting {picked.value}, {picked.next.value} and {picked.next.next.value} after {destination.value}"
-        )
-
-    insert_three_after(destination, picked)
-
-    return current.next
-
-
-def order_after_1(nodes):
-    current = nodes[1].next
-    s = ""
-    while current.value != 1:
-        s += str(current.value)
-        current = current.next
-    return s
-
-
-def extend(head, hi, nodes):
-    v = hi
-    current = head.next
-    while current.next.value != head.value:
-        current = current.next
-    while v <= 1_000_000:
-        if (v + 1) % 100_000 == 0:
-            print(datetime.datetime.now(), "Creating node", v + 1)
-        n = Node(v + 1)
-        nodes[v + 1] = n
-        current.next = n
-        current = n
-        v += 1
-
-    current.next = head
-    return head
+def output(cups, start, n):
+    return "".join(str(i) for i in cups_from(cups, start, n, skip=1))
 
 
 def part_1():
     input = "137826495"
-    current, lo, hi, nodes = parse(input)
+    current, cups = init([int(i) for i in input], len(input))
 
     for _ in range(100):
-        current = play_round(current, lo, hi, nodes)
+        current = play_move(current, cups)
 
-    assert "59374826" == order_after_1(nodes)
+    assert "59374826" == output(cups, 1, len(input) - 1)
 
 
 def part_2():
-    example_input = "389125467"
-    my_input = "137826495"
-    input = example_input
-    current, lo, hi, nodes = parse(input)
-    current = extend(current, hi, nodes)
+    input = "137826495"
+    current, cups = init([int(i) for i in input], 1_000_000)
 
-    for n in nodes:
-        assert n == nodes[n].value
+    for _ in range(10_000_000):
+        current = play_move(current, cups)
 
-    for i in range(10_000_002):
-        if (i + 1) % 1_000_000 == 0:
-            print(datetime.datetime.now(), "Playing round", i + 1)
-        current = play_round(current, lo, hi, nodes)
+    a = cups[1]
+    b = cups[a]
+
+    assert 66878091588 == a * b
